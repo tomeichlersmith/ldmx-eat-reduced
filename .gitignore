@@ -5,3 +5,6 @@
 .bash_logout
 
 **.so
+
+.ipynb_checkpoints
+__pycache__
