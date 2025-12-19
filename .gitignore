@@ -1,0 +1,7 @@
+**.root
+.bashrc
+.bash_profile
+.profile
+.bash_logout
+
+**.so
