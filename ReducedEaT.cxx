@@ -30,49 +30,51 @@ void ReducedEaT::onProcessStart() {
       "N Hits above "+std::to_string(max_pe_threshold)+"PE",
       100,0,100
   );
-  histograms_.create(
-      "trigger_hcal_min_cost_strip_layer",
-      "Strip", 40, -0.5, 39.5,
-      "Layer", 100, 0.5, 100.5
-  );
-  histograms_.create(
-      "ecalrms_hcal_min_cost_strip_layer",
-      "Strip", 40, -0.5, 39.5,
-      "Layer", 100, 0.5, 100.5
-  );
-  histograms_.create(
-      "trigger_total_ecal_rec_energy",
-      "Ecal Reco Energy [MeV]",
-      400,0,4000);
-  histograms_.create(
-      "hcalmaxpe_total_ecal_rec_energy",
-      "Ecal Reco Energy [MeV]",
-      400,0,4000);
-  histograms_.create(
-      "ecalrms_total_ecal_rec_energy",
-      "Ecal Reco Energy [MeV]",
-      400,0,4000);
+  for (const std::string& selection : {"trigger", "ecalrms"}) {
+    histograms_.create(
+        selection+"_hcal_min_cost_strip_layer",
+        "Strip", 40, -0.5, 39.5,
+        "Layer", 100, 0.5, 100.5
+    );
+    histograms_.create(
+        selection+"_hcalmaxpe",
+        "PE", 50, 0, 50
+    );
+  }
+
+  for (const std::string& selection : {"trigger", "hcalmaxpe"}) {
+    histograms_.create(
+        selection+"_ecalrms",
+        "Ecal RMS [mm]", 50, 0, 50);
+  }
+
+  for (const std::string& selection: {"trigger", "hcalmaxpe", "ecalrms", "final"}) {
+    histograms_.create(
+        selection+"_total_ecal_rec_energy",
+        "Ecal Reco Energy [MeV]",
+        400,0,4000);
+  }
 }
 
 static const std::vector<float> even_only_layer_weights = {
   2.329,
-  4.339, 4.339+6.495,
-  7.490, 7.490+8.595,
-  10.253, 10.253+10.915,
-  10.915, 10.915+10.915,
-  10.915, 10.915+10.915,
-  10.915, 10.915+10.915,
-  10.915, 10.915+10.915,
-  10.915, 10.915+10.915,
-  10.915, 10.915+10.915,
-  10.915, 10.915+10.915,
-  10.915, 10.915+10.915,
-  14.783, 14.783+18.539,
-  18.539, 18.539+18.539, 
-  18.539, 18.539+18.539,
-  18.539, 18.539+18.539,
-  18.539, 18.539+18.539,
-  9.938
+  -1, 4.339+6.495,
+  -1, 7.490+8.595,
+  -1, 10.253+10.915,
+  -1, 10.915+10.915,
+  -1, 10.915+10.915,
+  -1, 10.915+10.915,
+  -1, 10.915+10.915,
+  -1, 10.915+10.915,
+  -1, 10.915+10.915,
+  -1, 10.915+10.915,
+  -1, 10.915+10.915,
+  -1, 14.783+18.539,
+  -1, 18.539+18.539, 
+  -1, 18.539+18.539,
+  -1, 18.539+18.539,
+  -1, 18.539+18.539,
+  -1
 };
 static const float mip_si_energy = 0.130; // MeV
 
@@ -160,17 +162,22 @@ void ReducedEaT::analyze(const framework::Event& event) {
   histograms_.fill("trigger_hcal_min_cost_strip_layer",
       min_cost_veto ? min_cost_veto->getStrip() : -1,
       min_cost_veto ? min_cost_veto->getLayer() : -1);
+  histograms_.fill("trigger_ecalrms", shower_rms);
+  histograms_.fill("trigger_hcalmaxpe", hcal_max_pe);
   if (hcal_max_pe < max_pe_threshold) {
     histograms_.fill("hcalmaxpe_total_ecal_rec_energy", total_energy);
+    histograms_.fill("hcalmaxpe_ecalrms", shower_rms);
     if (shower_rms < rms_event_size_threshold) {
-      histograms_.fill("ecalrms_total_ecal_rec_energy", total_energy);
+      histograms_.fill("final_total_ecal_rec_energy", total_energy);
     }
   }
 
   if (shower_rms < rms_event_size_threshold) {
+    histograms_.fill("ecalrms_total_ecal_rec_energy", total_energy);
     histograms_.fill("trigger_hcal_min_cost_strip_layer",
         min_cost_veto ? min_cost_veto->getStrip() : -1,
         min_cost_veto ? min_cost_veto->getLayer() : -1);
+    histograms_.fill("ecalrms_hcalmaxpe", hcal_max_pe);
   }
 }
 
