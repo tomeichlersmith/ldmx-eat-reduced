@@ -8,7 +8,7 @@
 #include <cmath>
 
 int hcal_hit_cost(const ldmx::HcalHit& h) {
-  return h.getLayer()*std::max(4, 2*static_cast<int>(std::floor(std::abs(h.getStrip() - 19.5))));
+  return (h.getLayer()+1)*std::max(4, 2*static_cast<int>(std::floor(std::abs(h.getStrip() - 19.5))));
 }
 
 class ReducedEaT : public framework::Analyzer {
@@ -29,6 +29,16 @@ void ReducedEaT::onProcessStart() {
       "n_hcal_veto_hits",
       "N Hits above "+std::to_string(max_pe_threshold)+"PE",
       100,0,100
+  );
+  histograms_.create(
+      "trigger_hcal_min_cost_strip_layer",
+      "Strip", 40, -0.5, 39.5,
+      "Layer", 100, 0.5, 100.5
+  );
+  histograms_.create(
+      "ecalrms_hcal_min_cost_strip_layer",
+      "Strip", 40, -0.5, 39.5,
+      "Layer", 100, 0.5, 100.5
   );
   histograms_.create(
       "trigger_total_ecal_rec_energy",
@@ -127,6 +137,8 @@ void ReducedEaT::analyze(const framework::Event& event) {
 
   int n_hcal_veto_hits{0};
   float hcal_max_pe{0};
+  int hcal_hit_veto_cost{20*200};
+  const ldmx::HcalHit* min_cost_veto{nullptr};
   for (const auto* hcal_hit: hcal_hits) {
     if (hcal_hit->getPE() > hcal_max_pe) {
       hcal_max_pe = hcal_hit->getPE();
@@ -136,15 +148,29 @@ void ReducedEaT::analyze(const framework::Event& event) {
       continue;
     }
     n_hcal_veto_hits++;
+    int cost{hcal_hit_cost(*hcal_hit)};
+    if (cost < hcal_hit_veto_cost) {
+      hcal_hit_veto_cost = cost;
+      min_cost_veto = hcal_hit;
+    }
   }
 
   histograms_.fill("n_hcal_veto_hits", n_hcal_veto_hits);
   histograms_.fill("trigger_total_ecal_rec_energy", total_energy);
+  histograms_.fill("trigger_hcal_min_cost_strip_layer",
+      min_cost_veto ? min_cost_veto->getStrip() : -1,
+      min_cost_veto ? min_cost_veto->getLayer() : -1);
   if (hcal_max_pe < max_pe_threshold) {
     histograms_.fill("hcalmaxpe_total_ecal_rec_energy", total_energy);
     if (shower_rms < rms_event_size_threshold) {
       histograms_.fill("ecalrms_total_ecal_rec_energy", total_energy);
     }
+  }
+
+  if (shower_rms < rms_event_size_threshold) {
+    histograms_.fill("trigger_hcal_min_cost_strip_layer",
+        min_cost_veto ? min_cost_veto->getStrip() : -1,
+        min_cost_veto ? min_cost_veto->getLayer() : -1);
   }
 }
 
