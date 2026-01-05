@@ -51,3 +51,9 @@ N Files | Real Time
 8       |
 16      | 
 32      | 
+
+Ran `fire-parallel` over all 100 files on Enriched Nuclear 1 on my UMN workstation
+with 8 cores and in groups of 4 files per job. Taking about 25min per job ended up
+taking just under 90min in total (single-threaded would be ~150min).
+On all 100 files of Enriched Nuclear 2 with 8 cores and not in groups, also took about 90min.
+
