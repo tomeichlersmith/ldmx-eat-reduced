@@ -131,10 +131,8 @@ if ${dry_run}; then
 else
   ${cmd} &
   parallel_pid=$!
-  # give parallel some time to open the log file
-  sleep 1
   # watch log file until parallel completes all the jobs
-  tail -f --pid="${parallel_pid}" "${out_dir}/logs/parallel.log"
+  tail --follow=name --retry --pid="${parallel_pid}" "${out_dir}/logs/parallel.log" || true
   # attempt to merge the histogram files
   hadd "${out_dir}/hist.root" "${out_dir}/hists/"*
 fi
