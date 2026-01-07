@@ -174,7 +174,7 @@ void ReducedEaT::analyze(const framework::Event& event) {
 
   if (shower_rms < rms_event_size_threshold) {
     histograms_.fill("ecalrms_total_ecal_rec_energy", total_energy);
-    histograms_.fill("trigger_hcal_min_cost_strip_layer",
+    histograms_.fill("ecalrms_hcal_min_cost_strip_layer",
         min_cost_veto ? min_cost_veto->getStrip() : -1,
         min_cost_veto ? min_cost_veto->getLayer() : -1);
     histograms_.fill("ecalrms_hcalmaxpe", hcal_max_pe);
