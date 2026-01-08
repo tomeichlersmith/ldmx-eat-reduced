@@ -5,20 +5,19 @@ from pathlib import Path
 
 from helpy import HistFile
 from helpy.plot import plt, title_bar
+from helpy import samples
 import hist
 
 parser = argparse.ArgumentParser()
 parser.add_argument('hist', type=Path, help='histogram file to load histogram from')
-parser.add_argument('--label', help='additional sample label')
-parser.add_argument('--scale', type=float, default=1.0)
 args = parser.parse_args()
 
+sample = samples.get(args.hist.parent.stem)
+
 f = HistFile(args.hist, 'ReducedEaT')
-h = f['final_total_ecal_rec_energy'].to_hist()
+h = f['final_total_ecal_rec_energy'].to_hist()*sample.hist_scale
 
-scale = 1e13/(787*1e6)
-
-(h[hist.rebin(5)]*scale).plot1d(
+h[hist.rebin(5)].plot1d(
     yerr=False,
     flow=None
 )
@@ -26,7 +25,7 @@ plt.xlim(0,4000)
 plt.annotate(
     '\n'.join([
         'Only Even Ecal Layers',
-        args.label,
+        sample.label,
         'Hcal Back Max PE < 10',
         'Ecal RMS < 20 mm'
     ]),

@@ -5,30 +5,27 @@ from pathlib import Path
 
 from helpy import HistFile
 from helpy.plot import plt, title_bar
+from helpy import samples
 import hist
+
+selections = {
+    'trigger': 'Trigger',
+    'ecalrms': 'Ecal RMS < 20 mm'
+}
 
 parser = argparse.ArgumentParser()
 parser.add_argument('hist', type=Path, help='histogram file to load histogram from')
-parser.add_argument('--label', help='additional sample label')
-parser.add_argument('--selection', default='trigger', help='what cut to apply')
-parser.add_argument('--scale', default=1.0)
+parser.add_argument('--selection', default='trigger', choices = list(selections.keys()), help='what cut to apply')
 args = parser.parse_args()
 
+sample = samples.get(args.hist.parent.stem)
 f = HistFile(args.hist, 'ReducedEaT')
-h = f[f'{args.selection}_hcal_min_cost_strip_layer'].to_hist()
+h = (
+    f[f'{args.selection}_hcal_min_cost_strip_layer'].to_hist()
+    *sample.hist_scale
+)
 
-scales = {
-    'dimuon': 1e13/(1.2e9),
-    'enriched-nuclear': 1e13/(787*1e6)
-}
-
-if args.scale in scales:
-    scale = scales[args.scale]
-else:
-    scale = float(args.scale)
-
-
-art = (h*scale).plot2d(
+art = h.plot2d(
     flow='show',
     norm='log'
 )
@@ -36,8 +33,9 @@ art.cbar.set_label('Events')
 plt.annotate(
     '\n'.join([
         'Minimum Cost Hit above 10PE',
-        args.label,
-        args.selection.capitalize(),
+        'Back Hcal Only',
+        sample.label,
+        selections[args.selection]
     ]),
     xy=(0.95,0.95),
     xycoords='axes fraction',
