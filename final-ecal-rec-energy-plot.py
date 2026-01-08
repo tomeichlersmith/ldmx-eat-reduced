@@ -35,6 +35,8 @@ plt.annotate(
 )
 plt.ylabel('Events / 50 MeV')
 title_bar(r'8GeV  $10^{13}$ EoT')
+for boundary in (3160, 2760, 2000, 1000):
+    plt.axvline(boundary, color = 'gray', ymax = 0.7)
 plt.savefig(
     args.hist.parent / f'final-ecal-rec-energy.pdf',
     bbox_inches='tight'
