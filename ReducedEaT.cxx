@@ -30,7 +30,7 @@ void ReducedEaT::onProcessStart() {
       "N Hits above "+std::to_string(max_pe_threshold)+"PE",
       100,0,100
   );
-  for (const std::string& selection : {"trigger", "ecalrms"}) {
+  for (const std::string& selection : {"trigger", "ecalrms", "lowenergy"}) {
     histograms_.create(
         selection+"_hcal_min_cost_strip_layer",
         "Strip", 40, -0.5, 39.5,
@@ -178,6 +178,12 @@ void ReducedEaT::analyze(const framework::Event& event) {
         min_cost_veto ? min_cost_veto->getStrip() : -1,
         min_cost_veto ? min_cost_veto->getLayer() : -1);
     histograms_.fill("ecalrms_hcalmaxpe", hcal_max_pe);
+    if (total_energy < 3160) {
+      histograms_.fill("lowenergy_hcal_min_cost_strip_layer",
+        min_cost_veto ? min_cost_veto->getStrip() : -1,
+        min_cost_veto ? min_cost_veto->getLayer() : -1);
+      histograms_.fill("lowenergy_hcalmaxpe", hcal_max_pe);
+    }
   }
 }
 
