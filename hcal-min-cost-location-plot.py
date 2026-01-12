@@ -4,13 +4,14 @@ import argparse
 from pathlib import Path
 
 from helpy import HistFile
-from helpy.plot import plt, title_bar
+from helpy.plot import plt, title_bar, annotate
 from helpy import samples
 import hist
 
 selections = {
     'trigger': 'Trigger',
-    'ecalrms': 'Ecal RMS < 20 mm'
+    'ecalrms': 'Trigger\nEcal RMS < 20 mm',
+    'lowenergy': '\n'.join(['Trigger','Ecal RMS < 20 mm',r'$E_\text{Ecal} < 3.16$GeV'])
 }
 
 parser = argparse.ArgumentParser()
@@ -30,20 +31,18 @@ art = h.plot2d(
     norm='log'
 )
 art.cbar.set_label('Events')
-plt.annotate(
+annotate(
     '\n'.join([
         'Minimum Cost Hit above 10PE',
         'Back Hcal Only',
         sample.label,
         selections[args.selection]
     ]),
-    xy=(0.95,0.95),
-    xycoords='axes fraction',
-    ha='right', va='top'
+    loc='upper right'
 )
 title_bar(r'8GeV  $10^{13}$ EoT')
 plt.savefig(
-    args.hist.parent / f'{args.selection}-hcal-min-cost-strip-layer.pdf',
+    args.hist.parent / f'{args.selection}-hcal-min-cost-strip-layer.svg',
     bbox_inches='tight'
 )
 

@@ -33,3 +33,35 @@ def title_bar(
     mplhep.label.exp_text('LDMX', by_ldmx, **exp_text_kw, **kwargs)
     if text is not None:
         mplhep.label.lumitext(text, **lumitext_kw, **kwargs)
+
+
+def annotate(
+    *args,
+    loc = None,
+    **kwargs
+):
+    """a simple wrapper around plt.annotate that implements the corner-of-axes shortcuts
+    that plt.legend does"""
+    if loc == 'upper left':
+        kwargs['ha'] = 'left'
+        kwargs['va'] = 'top'
+        kwargs['xycoords'] = 'axes fraction'
+        kwargs['xy'] = (0.05,0.95)
+    elif loc == 'upper right':
+        kwargs['ha'] = 'right'
+        kwargs['va'] = 'top'
+        kwargs['xycoords'] = 'axes fraction'
+        kwargs['xy'] = (0.95,0.95)
+    elif loc == 'lower left':
+        kwargs['ha'] = 'left'
+        kwargs['va'] = 'bottom'
+        kwargs['xycoords'] = 'axes fraction'
+        kwargs['xy'] = (0.05,0.05)
+    elif loc == 'lower right':
+        kwargs['ha'] = 'right'
+        kwargs['va'] = 'bottom'
+        kwargs['xycoords'] = 'axes fraction'
+        kwargs['xy'] = (0.95,0.05)
+
+    return plt.annotate(*args, **kwargs)
+
