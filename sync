@@ -1,6 +1,0 @@
-#!/bin/sh
-rsync -avmu \
-  --exclude '*/hists/*' \
-  --exclude '*/logs/*' \
-  umn.workstation:ldmx/eat/reduced/out/ \
-  out/

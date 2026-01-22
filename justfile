@@ -12,4 +12,10 @@ run sample:
 # run over enriched-nuclear
 enriched-nuclear: (run "enriched-nuclear")
 
-
+# copy output directory from workstation to here
+sync:
+    rsync -avmu \
+      --exclude '*/hists/*' \
+      --exclude '*/logs/*' \
+      umn.workstation:ldmx/eat/reduced/out/ \
+      out/
