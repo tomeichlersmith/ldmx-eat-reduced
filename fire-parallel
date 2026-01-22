@@ -110,7 +110,7 @@ if ${dry_run}; then
   cmd="${cmd} --dry-run"
 else
   if [ -d "${out_dir}" ]; then
-    echo "error: output out directory '${out_dir}' already exists"
+    echo "error: output directory '${out_dir}' already exists"
     exit 4
   fi
   mkdir "${out_dir}"
