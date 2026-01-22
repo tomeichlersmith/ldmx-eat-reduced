@@ -7,8 +7,14 @@
 
 #include <cmath>
 
+/// count number of quad-bars are needed to reach out to the input
+/// strip assuming we start filling from the center (strip 20)
+int hcal_hit_n_required_quads(int strip) {
+  return std::floor(std::abs(strip - 19.5)/2)+1;
+}
+
 int hcal_hit_cost(const ldmx::HcalHit& h) {
-  return (h.getLayer()+1)*std::max(4, 2*static_cast<int>(std::floor(std::abs(h.getStrip() - 19.5))));
+  return h.getLayer()*hcal_hit_n_required_quads(h.getStrip());
 }
 
 class ReducedEaT : public framework::Analyzer {
@@ -33,6 +39,11 @@ void ReducedEaT::onProcessStart() {
   for (const std::string& selection : {"trigger", "ecalrms", "lowenergy"}) {
     histograms_.create(
         selection+"_hcal_min_cost_strip_layer",
+        "Strip", 40, -0.5, 39.5,
+        "Layer", 100, 0.5, 100.5
+    );
+    histograms_.create(
+        selection+"_hcal_central_strip_layer",
         "Strip", 40, -0.5, 39.5,
         "Layer", 100, 0.5, 100.5
     );
@@ -140,7 +151,8 @@ void ReducedEaT::analyze(const framework::Event& event) {
   int n_hcal_veto_hits{0};
   float hcal_max_pe{0};
   int hcal_hit_veto_cost{20*200};
-  const ldmx::HcalHit* min_cost_veto{nullptr};
+  std::pair<int,int> min_quad_bar{40,100};
+  const ldmx::HcalHit* min_cost_veto{nullptr}, *central_veto{nullptr};
   for (const auto* hcal_hit: hcal_hits) {
     if (hcal_hit->getPE() > hcal_max_pe) {
       hcal_max_pe = hcal_hit->getPE();
@@ -155,6 +167,12 @@ void ReducedEaT::analyze(const framework::Event& event) {
       hcal_hit_veto_cost = cost;
       min_cost_veto = hcal_hit;
     }
+    int n_req_quads{hcal_hit_n_required_quads(hcal_hit->getStrip())};
+    if (n_req_quads < min_quad_bar.first or
+        (n_req_quads == min_quad_bar.first and hcal_hit->getLayer() < min_quad_bar.second)) {
+      min_quad_bar = {n_req_quads, hcal_hit->getLayer()};
+      central_veto = hcal_hit;
+    }
   }
 
   histograms_.fill("n_hcal_veto_hits", n_hcal_veto_hits);
@@ -162,6 +180,9 @@ void ReducedEaT::analyze(const framework::Event& event) {
   histograms_.fill("trigger_hcal_min_cost_strip_layer",
       min_cost_veto ? min_cost_veto->getStrip() : -1,
       min_cost_veto ? min_cost_veto->getLayer() : -1);
+  histograms_.fill("trigger_hcal_central_strip_layer",
+      central_veto ? central_veto->getStrip() : -1,
+      central_veto ? central_veto->getLayer() : -1);
   histograms_.fill("trigger_ecalrms", shower_rms);
   histograms_.fill("trigger_hcalmaxpe", hcal_max_pe);
   if (hcal_max_pe < max_pe_threshold) {
@@ -177,11 +198,17 @@ void ReducedEaT::analyze(const framework::Event& event) {
     histograms_.fill("ecalrms_hcal_min_cost_strip_layer",
         min_cost_veto ? min_cost_veto->getStrip() : -1,
         min_cost_veto ? min_cost_veto->getLayer() : -1);
+    histograms_.fill("ecalrms_hcal_central_strip_layer",
+        central_veto ? central_veto->getStrip() : -1,
+        central_veto ? central_veto->getLayer() : -1);
     histograms_.fill("ecalrms_hcalmaxpe", hcal_max_pe);
     if (total_energy < 3160) {
       histograms_.fill("lowenergy_hcal_min_cost_strip_layer",
         min_cost_veto ? min_cost_veto->getStrip() : -1,
         min_cost_veto ? min_cost_veto->getLayer() : -1);
+      histograms_.fill("lowenergy_hcal_central_strip_layer",
+        central_veto ? central_veto->getStrip() : -1,
+        central_veto ? central_veto->getLayer() : -1);
       histograms_.fill("lowenergy_hcalmaxpe", hcal_max_pe);
     }
   }
