@@ -37,16 +37,18 @@
 - *Ecal RMS* -- transverse RMS of Ecal shower (calculated only with even layers)
 - *Bar* -- single element of Hcal detector, used interchangeably with "strip"
 - *Back Hcal Max PE* -- maximum PE deposited in a single bar in _entire_ Back Hcal
-- *Minimum Cost Hit* -- hit that minimizes cost function $C(l="layer",s="strip")$ (symmetric, even layers with strips in groups of 4)
+- *Quads* -- number of quads within a layer to get to strip $s$ symmetrically
 $
-C(l,s) = (l+1)max(4, 2floor(|s - 19.5|))
+  Q(s) = floor((|s - 19.5|)/2) + 1 
 $
+- *Layer #sym.star Quads* -- hit that minimizes "area" cost function $C(l="layer",s) = l times Q(s)$
+- *Quads then Layer* -- hit that minimizes $Q(s)$ and then minimizes layer if more than one hit in that "most central" quad
 
 = Plots
 
 == Dimuon
 #slide(composer: (auto, 1fr))[
-  #image("../out/dimuon/trigger-hcal-min-cost-strip-layer.svg")
+  #image("../out/dimuon/trigger-hcal-area-strip-layer.svg")
 ][
   === Good News
   - The bars designed as the muon veto for mu2e still easily veto muons!
@@ -57,21 +59,46 @@ $
   ]
 ]
 
-== Enriched Nuclear
+== Enriched Nuclear: Area Cost
 #slide(composer: (auto, 1fr))[
-  #image("../out/enriched-nuclear/trigger-hcal-min-cost-strip-layer.svg")
+  #image("../out/enriched-nuclear/trigger-hcal-area-strip-layer.svg")
 ][
   - need to use Ecal to know how large the Back Hcal "needs" to be
 ]
 
 #slide(composer: (auto, 1fr))[
-  #image("../out/enriched-nuclear/ecalrms-hcal-min-cost-strip-layer.svg")
+  #image("../out/enriched-nuclear/ecalrms-hcal-area-strip-layer.svg")
 ][
   - require shower in Ecal to be "thin"
 ]
 
 #slide(composer: (auto, 1fr))[
-  #image("../out/enriched-nuclear/lowenergy-hcal-min-cost-strip-layer.svg")
+  #image("../out/enriched-nuclear/lowenergy-hcal-area-strip-layer.svg")
+][
+  - require shower in Ecal to be lower energy (below trigger threshold)
+  
+  #tblock(title: [Rough "Requirements"])[
+    - 40 bars
+    - \~70 layers
+  ]
+  (not really requirements, could reduce Back Hcal further and just allow more background into multi-bin analysis)
+]
+
+== Enriched Nuclear: Most Central
+#slide(composer: (auto, 1fr))[
+  #image("../out/enriched-nuclear/trigger-hcal-central-strip-layer.svg")
+][
+  - need to use Ecal to know how large the Back Hcal "needs" to be
+]
+
+#slide(composer: (auto, 1fr))[
+  #image("../out/enriched-nuclear/ecalrms-hcal-central-strip-layer.svg")
+][
+  - require shower in Ecal to be "thin"
+]
+
+#slide(composer: (auto, 1fr))[
+  #image("../out/enriched-nuclear/lowenergy-hcal-central-strip-layer.svg")
 ][
   - require shower in Ecal to be lower energy (below trigger threshold)
   
@@ -88,14 +115,14 @@ $
   #tblock(title: [Seems Feasible])[
     - same order-of-magnitude as 4~GeV distribution in paper
     - could do fit and multi-bin analysis
+    - lowest-energy bin is still *empty*
   ]
 
-  lowest-energy bin is still *empty*
-
   === Further Questions
-  - use CERN 2022 Hcal as Back Hcal?
-    - with thicker steel?
+
+  - how many layers/strips is the prototype? an "Hcal Module"?
   - Trigger doing too much work?
+    - requires new simulation
 ]
 
 #show: appendix

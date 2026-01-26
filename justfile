@@ -19,3 +19,7 @@ sync:
       --exclude '*/logs/*' \
       umn.workstation:ldmx/eat/reduced/out/ \
       out/
+
+# watch slides while developing update
+slides:
+    typst watch slides/slides.typ --root . --open
