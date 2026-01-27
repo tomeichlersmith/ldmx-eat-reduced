@@ -20,10 +20,7 @@ args = parser.parse_args()
 sample = samples.get(args.hist.parent.stem)
 f = HistFile(args.hist, 'ReducedEaT')
 for name, label in selections.items():
-  h = (
-      f[f'{name}_ecalrms'].to_hist()
-      *sample.hist_scale
-  )
+  h = (f[f'{name}_ecalrms']*sample.hist_scale)
   art = h.plot1d(label=label,flow=None)
 plt.yscale('log')
 plt.xlim(0,50)

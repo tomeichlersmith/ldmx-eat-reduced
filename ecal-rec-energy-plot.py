@@ -24,7 +24,7 @@ sample = samples.get(args.hist.parent.stem)
 f = HistFile(args.hist, 'ReducedEaT')
 
 for name, label in selections.items():
-    h = f[f'{name}_total_ecal_rec_energy'].to_hist()*sample.hist_scale
+    h = f[f'{name}_total_ecal_rec_energy']*sample.hist_scale
     h[hist.rebin(5)].plot1d(
         yerr=False,
         flow=None,

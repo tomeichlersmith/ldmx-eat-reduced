@@ -29,7 +29,7 @@ sample = samples.get(args.hist.parent.stem)
 key, label = cost_funcs[args.cost]
 f = HistFile(args.hist, 'ReducedEaT')
 h = (
-    f[f'{args.selection}_hcal_{key}_strip_layer'].to_hist()
+    f[f'{args.selection}_hcal_{key}_strip_layer']
     *sample.hist_scale
 )
 
