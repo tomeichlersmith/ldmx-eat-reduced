@@ -8,6 +8,13 @@ from helpy.plot import plt, title_bar
 from helpy import samples
 import hist
 
+hcal_options = {
+    'entireback': 'Entire Back',
+    'sixonly': 'Only 6 Modules',
+    'funnel' : '6 Modules then Prototype',
+    'megaphone': 'Prototype then 6 Modules'
+}
+
 parser = argparse.ArgumentParser()
 parser.add_argument('hist', type=Path, help='histogram file to load histogram from')
 args = parser.parse_args()
@@ -15,29 +22,32 @@ args = parser.parse_args()
 sample = samples.get(args.hist.parent.stem)
 
 f = HistFile(args.hist, 'ReducedEaT')
-h = f['final_total_ecal_rec_energy']*sample.hist_scale
 
-h[hist.rebin(5)].plot1d(
-    yerr=False,
-    flow=None
-)
+for key, label in hcal_options.items():
+    h = f[f'{key}_final_total_ecal_rec_energy']*sample.hist_scale
+    h[hist.rebin(5)].plot1d(
+        yerr=False,
+        flow=None,
+        label=label,
+        histtype='bar' if key == 'entireback' else 'step'
+    )
+
 plt.xlim(0,4000)
-plt.annotate(
-    '\n'.join([
+plt.legend(
+    title='\n'.join([
         'Only Even Ecal Layers',
         sample.label,
         'Trigger',
-        'Back Hcal Max PE < 10',
+        'Hcal Max PE < 10',
         'Ecal RMS < 20 mm'
     ]),
-    xy=(0.05,0.95),
-    xycoords='axes fraction',
-    ha='left', va='top'
+    loc='upper left',
 )
+plt.yscale('log')
 plt.ylabel('Events / 50 MeV')
 title_bar(r'8GeV  $10^{13}$ EoT')
 for boundary in (3160, 2760, 2000, 1000):
-    plt.axvline(boundary, color = 'gray', ymax = 0.7)
+    plt.axvline(boundary, color = 'gray', ymax = 0.5)
 plt.savefig(
     args.hist.parent / f'final-ecal-rec-energy.svg',
     bbox_inches='tight'
