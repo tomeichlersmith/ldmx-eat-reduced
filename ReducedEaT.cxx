@@ -67,6 +67,18 @@ bool is_in_first_six_modules(const ldmx::HcalHit& hit) {
   return (hit.getLayer() < 6*8 + 1);
 }
 
+bool is_in_prototype(const ldmx::HcalHit& hit) {
+  if (not is_in_back_hcal(hit)) return false;
+  if (hit.getLayer() < 9 + 1) {
+    // first 9 layers have 2 quads
+    return hcal_hit_n_required_quads(hit.getStrip()) < 3;
+  } else if (hit.getLayer() < 19 + 1) {
+    // 10-19 have 3 quads
+    return hcal_hit_n_required_quads(hit.getStrip()) < 4;
+  }
+  return false;
+}
+
 bool is_in_prototype_then_six_modules(const ldmx::HcalHit& hit) {
   if (not is_in_back_hcal(hit)) return false;
   if (hit.getLayer() < 9 + 1) {
@@ -101,7 +113,8 @@ static const std::map<std::string, HcalHitFilter> REDUCED_HCAL_OPTIONS = {
   {"entireback", is_in_back_hcal},
   {"sixonly", is_in_first_six_modules},
   {"funnel", is_in_six_modules_then_reverse_prototype},
-  {"megaphone", is_in_prototype_then_six_modules}
+  {"megaphone", is_in_prototype_then_six_modules},
+  {"prototype", is_in_prototype}
 };
 
 class ReducedEaT : public framework::Analyzer {
