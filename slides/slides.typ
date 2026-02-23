@@ -109,18 +109,22 @@ $
   (not really requirements, could reduce Back Hcal further and just allow more background into multi-bin analysis)
 ]
 
+== Reduced Hcal Options
 #slide(composer: (auto, 1fr))[
   #image("../out/enriched-nuclear/final-ecal-rec-energy.svg")
 ][
   #tblock(title: [Seems Feasible])[
     - same order-of-magnitude as 4~GeV distribution in paper
     - could do fit and multi-bin analysis
-    - lowest-energy bin is still *empty*
+    - lowest-energy bin is still *empty* if broad modules are included
   ]
+
+  - Module: 8 40-strip layers
+  - Prototype: as configured at CERN
+    - 9 8-strip layers then 10 12-strip layers
 
   === Further Questions
 
-  - how many layers/strips is the prototype? an "Hcal Module"?
   - Trigger doing too much work?
     - requires new simulation
 ]
