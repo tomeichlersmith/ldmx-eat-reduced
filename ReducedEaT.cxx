@@ -62,6 +62,11 @@ bool is_in_back_hcal(const ldmx::HcalHit& hit) {
   return (hit.getSection() == 0);
 }
 
+bool is_in_thin_back(const ldmx::HcalHit& hit) {
+  if (not is_in_back_hcal(hit)) return false;
+  return hcal_hit_n_required_quads(hit.getStrip()) < 5;
+}
+
 bool is_in_first_six_modules(const ldmx::HcalHit& hit) {
   if (not is_in_back_hcal(hit)) return false;
   return (hit.getLayer() < 6*8 + 1);
@@ -111,6 +116,7 @@ bool is_in_six_modules_then_reverse_prototype(const ldmx::HcalHit& hit) {
 
 static const std::map<std::string, HcalHitFilter> REDUCED_HCAL_OPTIONS = {
   {"entireback", is_in_back_hcal},
+  {"thinback", is_in_thin_back},
   {"sixonly", is_in_first_six_modules},
   {"funnel", is_in_six_modules_then_reverse_prototype},
   {"megaphone", is_in_prototype_then_six_modules},
