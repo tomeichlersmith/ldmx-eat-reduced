@@ -13,7 +13,8 @@ hcal_options = {
     'prototype' : 'CERN 2022 Prototype',
     'sixonly': 'Only 6 Modules',
     'funnel' : '6 Modules then Prototype',
-    'megaphone': 'Prototype then 6 Modules'
+    'megaphone': 'Prototype then 6 Modules',
+    'thinback': '1.6m Wide, Full Depth',
 }
 
 parser = argparse.ArgumentParser()
@@ -43,12 +44,13 @@ plt.legend(
         'Ecal RMS < 20 mm'
     ]),
     loc='upper left',
+    bbox_to_anchor = (1,1)
 )
 plt.yscale('log')
 plt.ylabel('Events / 50 MeV')
 title_bar(r'8GeV  $10^{13}$ EoT')
 for boundary in (3160, 2760, 2000, 1000):
-    plt.axvline(boundary, color = 'gray', ymax = 0.5)
+    plt.axvline(boundary, color = 'gray', linestyle = 'dotted')
 plt.savefig(
     args.hist.parent / f'final-ecal-rec-energy.svg',
     bbox_inches='tight'
