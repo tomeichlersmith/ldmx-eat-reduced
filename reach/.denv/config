@@ -1,0 +1,8 @@
+denv_name="combine"
+denv_image="gitlab-registry.cern.ch/cms-cloud/combine-standalone:v9.2.1"
+denv_shell="/bin/bash -i"
+denv_mounts=""
+denv_env_var_copy_all="false"
+denv_env_var_copy=""
+denv_env_var_set=""
+denv_network="true"

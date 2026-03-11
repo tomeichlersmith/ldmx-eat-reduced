@@ -1,0 +1,29 @@
+#!/bin/sh
+#  run (in parallel) the combine framework and then merge the results
+
+set -o errexit
+set -o nounset
+
+name="${1}"
+if [ -f higgsCombine.HybridNew.MedianLimit.${name}.root ]; then
+  echo "ERROR: Output file already exists. rm if you want to replace."
+  exit 1
+fi
+# median expected limit rather than observed
+#    --expectedFromGrid=0.5 \
+# removed for jm-requests since we want to vary the quantiles
+# lower CL to 90% from default 95%
+#    --cl 0.9 \
+parallel \
+  --joblog combine-${name}.log \
+  denv combine \
+    --name ${name} \
+    --hintMethod AsymptoticLimits \
+    --method HybridNew \
+    --LHCmode LHC-limits \
+    --rAbsAcc 0.00005 \
+  :::: jm-requests/jobs.list
+denv hadd \
+  higgsCombine.HybridNew.MedianLimit.${name}.root \
+  higgsCombine${name}.HybridNew.mH*.root
+rm higgsCombine${name}.HybridNew.mH*.root
