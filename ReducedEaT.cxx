@@ -98,15 +98,16 @@ bool is_in_prototype_then_six_modules(const ldmx::HcalHit& hit) {
   }
 }
 
-bool is_in_six_modules_then_reverse_prototype(const ldmx::HcalHit& hit) {
+template<int N>
+bool is_in_N_modules_then_reverse_prototype(const ldmx::HcalHit& hit) {
   if (not is_in_back_hcal(hit)) return false;
-  if (hit.getLayer() < 6*8+1) {
-    // first 6 modules (8 layers each) have all 5 quads
-    return true;
-  } else if (hit.getLayer() < (6*8 + 10 + 1)) {
+  if (hit.getLayer() < N*8+1) {
+    // first 6 modules (8 layers each) have all 4 quads
+    return hcal_hit_n_required_quads(hit.getStrip()) < 5;
+  } else if (hit.getLayer() < (N*8 + 10 + 1)) {
     // next 10 layers have 3 quads
     return hcal_hit_n_required_quads(hit.getStrip()) < 4;
-  } else if (hit.getLayer() < (6*8 + 10 + 9 + 1)) {
+  } else if (hit.getLayer() < (N*8 + 10 + 9 + 1)) {
     // next 9 layers have 2 quads
     return hcal_hit_n_required_quads(hit.getStrip()) < 3;
   } else {
@@ -118,7 +119,12 @@ static const std::map<std::string, HcalHitFilter> REDUCED_HCAL_OPTIONS = {
   {"entireback", is_in_back_hcal},
   {"thinback", is_in_thin_back},
   {"sixonly", is_in_first_six_modules},
-  {"funnel", is_in_six_modules_then_reverse_prototype},
+  {"funnel6", is_in_N_modules_then_reverse_prototype<6>},
+  {"funnel5", is_in_N_modules_then_reverse_prototype<5>},
+  {"funnel4", is_in_N_modules_then_reverse_prototype<4>},
+  {"funnel3", is_in_N_modules_then_reverse_prototype<3>},
+  {"funnel2", is_in_N_modules_then_reverse_prototype<2>},
+  {"funnel1", is_in_N_modules_then_reverse_prototype<1>},
   {"megaphone", is_in_prototype_then_six_modules},
   {"prototype", is_in_prototype}
 };
