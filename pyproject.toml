@@ -5,7 +5,8 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "delta-method>=0.1",
+    "delta_method@git+https://github.com/gjpelletier/delta_method.git",
     "jupyterlab>=4.5.1",
     "scikit-hep>=2025.11.1",
+    "statsmodels>=0.14.6",
 ]

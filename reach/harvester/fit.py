@@ -55,16 +55,16 @@ def deduce_label(f, opt, cov, **plt_kwargs):
 
 @dataclass
 class expo:
-    max_efrac: float = 1.
+    max_e: float = 1.
     
-    def __call__(self, efrac, amplitude, rate):
-        return amplitude*np.exp(rate*(1-efrac/self.max_efrac))
+    def __call__(self, e, amplitude, rate):
+        return amplitude*np.exp(rate*(1-e/self.max_e))
 
 
     @property
     def __label__(self):
-        if self.max_efrac != 1.:
-            return r"$Ae^{B(1-E_\text{frac}/"+str(self.max_efrac)+")}$"
+        if self.max_e != 1.:
+            return r"$Ae^{B(1-E_\text{frac}/"+str(self.max_e)+")}$"
         return r"$Ae^{B(1-E_\text{frac})}$"
 
     def delta_method(self, plt_range, alpha = 0.05):
