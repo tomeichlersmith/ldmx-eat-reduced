@@ -1,8 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 #  run (in parallel) the combine framework and then merge the results
 
 set -o errexit
 set -o nounset
+
+# go to the directory of this script
+cd -- "$( dirname -- "${BASH_SOURCE[0]}" )"
 
 name="${1}"
 if [ -f higgsCombine.HybridNew.MedianLimit.${name}.root ]; then

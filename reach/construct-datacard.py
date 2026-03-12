@@ -19,7 +19,7 @@ with open(here / 'paper-sig-eff.json', 'r') as f:
 with open(args.bkgd, 'r') as f:
     bkgd_yields = json.load(f)
 
-combine_dir = here / 'cards'
+combine_dir = here / 'combine' / 'cards'
 combine_dir.mkdir(parents=True, exist_ok=True)
 
 with open(combine_dir / 'jobs.list', 'w') as jobs:
@@ -39,7 +39,7 @@ with open(combine_dir / 'jobs.list', 'w') as jobs:
                 .bkg_syst(0.0, 0.6, 0.7)
                 .write(datacard_path)
             )
-            for q in [0.025, 0.16, 0.5, 0.84, 0.975]:
+            for q in [0.5]: #[0.025, 0.16, 0.5, 0.84, 0.975]:
                 jobs.write(' '.join([
                     datacard_path,
                     f'--keyword-value option={option}',
