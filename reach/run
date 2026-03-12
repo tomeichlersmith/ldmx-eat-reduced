@@ -22,7 +22,7 @@ parallel \
     --method HybridNew \
     --LHCmode LHC-limits \
     --rAbsAcc 0.00005 \
-  :::: jm-requests/jobs.list
+  :::: cards/jobs.list
 denv hadd \
   higgsCombine.HybridNew.MedianLimit.${name}.root \
   higgsCombine${name}.HybridNew.mH*.root
