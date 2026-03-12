@@ -64,8 +64,8 @@ class expo:
     @property
     def __label__(self):
         if self.max_e != 1.:
-            return r"$Ae^{B(1-E_\text{frac}/"+str(self.max_e)+")}$"
-        return r"$Ae^{B(1-E_\text{frac})}$"
+            return r"$Ae^{B(1-E_\text{ECal}/"+str(self.max_e)+")}$"
+        return r"$Ae^{B(1-E_\text{ECal})}$"
 
     def delta_method(self, plt_range, alpha = 0.05):
         return delta_method(self.cov, self.opt, plt_range, self, self.x, self.y, alpha)

@@ -22,8 +22,10 @@ bkgd_yield = {}
 
 for option in ['entireback', 'funnel', 'prototype']:
     bkg_h = f[f'ReducedEaT/ReducedEaT_{option}_final_total_ecal_rec_energy'].to_hist()
-    # need to scale histogram to yield
-    bkg_h = bkg_h[:hist.loc(max_e)]*(7e6/1e4)
+    # need to scale histogram from weights to yield
+    # this is the correct scale for the 8GeV, Enriched Nuclear sample from the EaT paper
+    # the Di-Muon sample is assumed to be negligible
+    bkg_h = bkg_h[:hist.loc(max_e):hist.rebin(5)]*200.0
     
     e = bkg_h.axes[0].centers
     de = bkg_h.axes[0].widths
@@ -100,6 +102,24 @@ for option in ['entireback', 'funnel', 'prototype']:
     # plt.ylim(ymin=1)
     plt.xlim(0,cut)
     show(beam, display=False, filename=output / f'{beam}gev-{option}-integrated-bkgd-fit.pdf')
+
+
+for option, by in bkgd_yield.items():
+    mplhep.histplot(
+        by['fit_val'],
+        bins=ana_bins,
+        yerr = [(up-lo)/2 for up, lo in zip(by['up'],by['lo'], strict=True)],
+        histtype='errorbar',
+        capsize=5,
+        label=option
+    )
+plt.legend(loc='upper left')
+plt.ylabel(r"$N_\text{bkgd}$ / bin")
+plt.xlabel(r"Analysis Bin $E_\text{ECal}$")
+plt.yscale('log')
+# plt.ylim(ymin=1)
+plt.xlim(0,cut)
+show(beam, display=False, filename=output / f'{beam}gev-integrated-bkgd-fit-comp.pdf')
 
 
 with open(output / 'bkgd-prediction.json','w') as f:
