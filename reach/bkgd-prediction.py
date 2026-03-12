@@ -11,22 +11,48 @@ parser = argparse.ArgumentParser()
 parser.add_argument('hist', type=Path)
 args = parser.parse_args()
 
-with uproot.open(args.hist) as f:
-    bkg_h = f['ReducedEaT/ReducedEaT_funnel_final_total_ecal_rec_energy'].to_hist()
-
 beam = 8
 cut = 2760
 max_e = 3160
+ana_bins = np.array([0.0, 0.1*beam*1000, 0.2*beam*1000, cut])
 output = args.hist.parent
 bkgd_yield = {}
 
-for option in ['entireback', 'funnel', 'prototype']:
-    bkg_h = f[f'ReducedEaT/ReducedEaT_{option}_final_total_ecal_rec_energy'].to_hist()
-    # need to scale histogram from weights to yield
-    # this is the correct scale for the 8GeV, Enriched Nuclear sample from the EaT paper
-    # the Di-Muon sample is assumed to be negligible
-    bkg_h = bkg_h[:hist.loc(max_e):hist.rebin(5)]*200.0
-    
+# need to scale histogram from weights to yield
+# this is the correct scale for the 8GeV, Enriched Nuclear sample from the EaT paper
+# the Di-Muon sample is assumed to be negligible
+with uproot.open(args.hist) as f:
+    histograms = {
+        option: (
+            f[f'ReducedEaT/ReducedEaT_{option}_final_total_ecal_rec_energy'].to_hist()
+            [:hist.loc(max_e):hist.rebin(5)]*200.0
+        )
+        for option in ['entireback', 'funnel', 'prototype']
+    }
+
+for option, bkg_h in histograms.items():
+    cumulative_bkg = bkg_h.view().cumsum()
+    mplhep.histplot(
+        cumulative_bkg['value'],
+        bins = bkg_h.axes[0].edges,
+        w2 = cumulative_bkg['variance'],
+        w2method = mplhep.error_estimation.poisson_interval,
+        label = option
+    )
+plt.ylabel(r"$N_\text{bkgd}$ below $E_\text{ECal}$")
+plt.xlabel(r"$E_\text{ECal}$ / MeV")
+plt.yscale('log')
+# plt.ylim(ymin=1e-2) #, ymax=1e3)
+plt.xlim(0,max_e)
+plt.legend(loc='upper left')
+show(
+    beam,
+    filename=output / f'{beam}gev-cumulative-bkgd-comp.pdf',
+    stage='Simulation Internal',
+    display=False
+)
+
+for option, bkg_h in histograms.items():
     e = bkg_h.axes[0].centers
     de = bkg_h.axes[0].widths
     
@@ -60,7 +86,6 @@ for option in ['entireback', 'funnel', 'prototype']:
         display=False
     )
     
-    ana_bins = np.array([0.0, 0.1*beam*1000, 0.2*beam*1000, cut])
     
     i_bin = np.digitize(ana_bins, bins=bkg_h.axes[0].edges, right=True)-1
     i_bin[0] = 0
