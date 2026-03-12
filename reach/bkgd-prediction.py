@@ -16,6 +16,14 @@ cut = 2760
 max_e = 3160
 ana_bins = np.array([0.0, 0.1*beam*1000, 0.2*beam*1000, cut])
 output = args.hist.parent
+hcal_options = {
+    'entireback': 'Entire Back',
+    'prototype' : 'CERN 2022 Prototype',
+    'sixonly': 'Only 6 Modules',
+    'funnel' : '6 Modules then Prototype',
+    'megaphone': 'Prototype then 6 Modules',
+    'thinback': '1.6m Wide, Full Depth',
+}
 bkgd_yield = {}
 
 # need to scale histogram from weights to yield
@@ -27,7 +35,7 @@ with uproot.open(args.hist) as f:
             f[f'ReducedEaT/ReducedEaT_{option}_final_total_ecal_rec_energy'].to_hist()
             [:hist.loc(max_e):hist.rebin(5)]*200.0
         )
-        for option in ['entireback', 'funnel', 'prototype']
+        for option in hcal_options
     }
 
 for option, bkg_h in histograms.items():
@@ -37,7 +45,7 @@ for option, bkg_h in histograms.items():
         bins = bkg_h.axes[0].edges,
         w2 = cumulative_bkg['variance'],
         w2method = mplhep.error_estimation.poisson_interval,
-        label = option
+        label = hcal_options[option]
     )
 plt.ylabel(r"$N_\text{bkgd}$ below $E_\text{ECal}$")
 plt.xlabel(r"$E_\text{ECal}$ / MeV")
@@ -78,7 +86,7 @@ for option, bkg_h in histograms.items():
     plt.yscale('log')
     # plt.ylim(ymin=1e-2) #, ymax=1e3)
     plt.xlim(0,max_e)
-    plt.legend(loc='upper left')
+    plt.legend(loc='upper left', title = hcal_options[option])
     show(
         beam,
         filename=output / f'{beam}gev-{option}-cumulative-bkgd-fit.pdf',
@@ -120,13 +128,18 @@ for option, bkg_h in histograms.items():
         label = deduce_label(the_fit, the_fit.opt, the_fit.cov)
     )
     
-    plt.legend(loc='upper left')
+    plt.legend(loc='upper left', title=hcal_options[option])
     plt.ylabel(r"$N_\text{bkgd}$ / bin")
     plt.xlabel(r"Analysis Bin $E_\text{ECal}$")
     plt.yscale('log')
     # plt.ylim(ymin=1)
     plt.xlim(0,cut)
-    show(beam, display=False, filename=output / f'{beam}gev-{option}-integrated-bkgd-fit.pdf')
+    show(
+        beam,
+        display=False,
+        stage="Simulation Internal",
+        filename=output / f'{beam}gev-{option}-integrated-bkgd-fit.pdf'
+    )
 
 
 for option, by in bkgd_yield.items():
@@ -136,7 +149,7 @@ for option, by in bkgd_yield.items():
         yerr = [(up-lo)/2 for up, lo in zip(by['up'],by['lo'], strict=True)],
         histtype='errorbar',
         capsize=5,
-        label=option
+        label=hcal_options[option]
     )
 plt.legend(loc='upper left')
 plt.ylabel(r"$N_\text{bkgd}$ / bin")
@@ -144,7 +157,12 @@ plt.xlabel(r"Analysis Bin $E_\text{ECal}$")
 plt.yscale('log')
 # plt.ylim(ymin=1)
 plt.xlim(0,cut)
-show(beam, display=False, filename=output / f'{beam}gev-integrated-bkgd-fit-comp.pdf')
+show(
+    beam,
+    display=False,
+    stage="Simulation Internal",
+    filename=output / f'{beam}gev-integrated-bkgd-fit-comp.pdf'
+)
 
 
 with open(output / 'bkgd-prediction.json','w') as f:
