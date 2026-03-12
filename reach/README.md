@@ -17,5 +17,7 @@ uv run bkgd-prediction.py path/to/hist.root
 # 2. writes datacards to combine/cards directory
 uv run construct-datacard.py path/to/bkgd-prediction.json
 # 3. writes combine output to combine/ directory
-./combine/run
+./combine/run NAME
+# use the PARALLEL environment variable to add more options to GNU parallel, e.g.
+PARALLEL="-j2" ./combine/run Test
 ```
