@@ -1,5 +1,6 @@
 from harvester.plot import plt, mplhep, show
 from harvester.fit import expo, deduce_label
+from hcal_options import hcal_options
 import hist
 import numpy as np
 import json
@@ -16,14 +17,6 @@ cut = 2760
 max_e = 3160
 ana_bins = np.array([0.0, 0.1*beam*1000, 0.2*beam*1000, cut])
 output = args.hist.parent
-hcal_options = {
-    'entireback': 'Entire Back',
-    'prototype' : 'CERN 2022 Prototype',
-    'sixonly': 'Only 6 Modules',
-    'funnel' : '6 Modules then Prototype',
-    'megaphone': 'Prototype then 6 Modules',
-    'thinback': '1.6m Wide, Full Depth',
-}
 bkgd_yield = {}
 
 # need to scale histogram from weights to yield
