@@ -50,8 +50,23 @@ def load_max_signal_allowed(run = None):
         return pd.DataFrame(f['limit'].arrays(library='np'))
 
 
-def load_signal_rates(f = '../prod-rate/eat-nom-rates.csv'):
+def load_signal_rates():
     import pandas as pd
-    rates = pd.read_csv(f).set_index(['target','beam','min_efrac','map'])
+    rates = (
+        pd.read_csv(Path(__file__).parent / 'eat-nom-rates.csv')
+        .set_index(['target','beam','min_efrac','map'])
+    )
     rates['rate'] = rates.rate/0.01**2 # remove eps2 dependence
     return rates
+
+
+def load_signal_yield(rates = None):
+    if rates is None:
+        rates = load_signal_rates()
+    masses = [1,5,10,50,100,500,1000]
+    beam = 8
+    return pd.DataFrame({
+        'ap_mass': masses,
+        'prod_yield': [rates.loc['eat',beam,0.5,m].rate*1e13 for m in masses]
+        })
+
