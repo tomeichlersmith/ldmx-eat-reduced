@@ -5,6 +5,10 @@ from pathlib import Path
 
 from helpy import HistFile
 from helpy.plot import plt, title_bar
+
+import matplotlib as mpl
+mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=mpl.color_sequences['tab10'])
+
 from helpy import samples
 import hist
 
@@ -24,7 +28,6 @@ for key, label in hcal_options.items():
         yerr=False,
         flow=None,
         label=label,
-        histtype='bar' if key == 'entireback' else 'step'
     )
 
 plt.xlim(0,4000)

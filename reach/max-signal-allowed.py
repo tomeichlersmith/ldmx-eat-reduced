@@ -18,7 +18,7 @@ with uproot.open(args.combine) as f:
         f['limit'].arrays(library='np')
     ).set_index(['option', 'mh'])
 
-all_options = [('paper', 'Full LDMX')]+list(hcal_options.items())
+all_options = list(hcal_options.items())+[('paper', 'Full LDMX')]
 
 plt_msa(
     *(

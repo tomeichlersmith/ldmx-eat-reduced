@@ -23,7 +23,7 @@ with uproot.open(args.combine) as f:
     ).set_index(['option', 'mh'])
 
 
-all_options = [('paper', 'Full LDMX')]+list(hcal_options.items())
+all_options = list(hcal_options.items())+[('paper', 'Full LDMX')]
 alpha_D = 0.5
 mA_over_mChi = 3
 masses = np.array([1,5,10,50,100,500,1000])
@@ -41,7 +41,7 @@ def limit(msa, label, band = None, plt_kwargs = {}):
     art = plt.plot(
         mchi,
         y_limit,
-        label=r'EaT; $10^{13}~\text{EoT}$; '+(method if label is None else label),
+        label=(method if label is None else label),
         **plt_kwargs
     )
     if band is not None:
@@ -130,6 +130,5 @@ def reach_plt(
 reach_plt(
     *((msa.loc[option,:], label) for option, label in all_options),
     beam = 8,
-    lumi = None,
     filename = args.output / '8gev-reach-all.pdf'
 )

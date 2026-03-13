@@ -3,8 +3,12 @@
 import matplotlib as mpl
 import mplhep
 import mplhep.error_estimation
+
 mpl.style.use(mplhep.style.ROOT)
+mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=mpl.color_sequences['tab10'])
+
 import matplotlib.pyplot as plt
+
 
 
 def show(

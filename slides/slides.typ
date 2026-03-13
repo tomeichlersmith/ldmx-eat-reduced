@@ -43,105 +43,69 @@ $
 $
 - *Layer #sym.star Quads* -- hit that minimizes "area" cost function $C(l="layer",s) = l times Q(s)$
 - *Quads then Layer* -- hit that minimizes $Q(s)$ and then minimizes layer if more than one hit in that "most central" quad
+- *Thin Module* -- 4 quad bars (36 strips) instead of 5 quad bars (40 strips) per layer
 
-= Plots
+= Reducing Hcal
 
-== Dimuon
-#slide(composer: (auto, 1fr))[
-  #image("../out/dimuon/trigger-hcal-area-strip-layer.svg")
-][
-  === Good News
-  - The bars designed as the muon veto for mu2e still easily veto muons!
-  - Only need one layer (12 bars) in the Back Hcal to veto all but 2 events from the dimuon sample
-
-  #align(bottom)[
-    Will need a larger Back Hcal for Enriched Nuclear...
-  ]
-]
-
-== Enriched Nuclear: Area Cost
-#slide(composer: (auto, 1fr))[
-  #image("../out/enriched-nuclear/trigger-hcal-area-strip-layer.svg")
-][
-  - need to use Ecal to know how large the Back Hcal "needs" to be
-]
-
-#slide(composer: (auto, 1fr))[
-  #image("../out/enriched-nuclear/ecalrms-hcal-area-strip-layer.svg")
-][
-  - require shower in Ecal to be "thin"
-]
-
-#slide(composer: (auto, 1fr))[
-  #image("../out/enriched-nuclear/lowenergy-hcal-area-strip-layer.svg")
-][
-  - require shower in Ecal to be lower energy (below trigger threshold)
-  
-  #tblock(title: [Rough "Requirements"])[
-    - 40 bars
-    - \~70 layers
-  ]
-  (not really requirements, could reduce Back Hcal further and just allow more background into multi-bin analysis)
-]
-
-== Enriched Nuclear: Most Central
-#slide(composer: (auto, 1fr))[
-  #image("../out/enriched-nuclear/trigger-hcal-central-strip-layer.svg")
-][
-  - need to use Ecal to know how large the Back Hcal "needs" to be
-]
-
-#slide(composer: (auto, 1fr))[
-  #image("../out/enriched-nuclear/ecalrms-hcal-central-strip-layer.svg")
-][
-  - require shower in Ecal to be "thin"
-]
-
-#slide(composer: (auto, 1fr))[
-  #image("../out/enriched-nuclear/lowenergy-hcal-central-strip-layer.svg")
-][
-  - require shower in Ecal to be lower energy (below trigger threshold)
-  
-  #tblock(title: [Rough "Requirements"])[
-    - 40 bars
-    - \~70 layers
-  ]
-  (not really requirements, could reduce Back Hcal further and just allow more background into multi-bin analysis)
-]
-
-== Reduced Hcal Options
+== Final Ecal Energy Distribution
 #slide(composer: (auto, 1fr))[
   #image("../out/enriched-nuclear/final-ecal-rec-energy.svg")
 ][
-  #tblock(title: [Seems Feasible])[
-    - same order-of-magnitude as 4~GeV distribution in paper
-    - could do fit and multi-bin analysis
-    - lowest-energy bin is still *empty* if broad modules are included
-  ]
-
-  - Module: 8 40-strip layers
-  - Prototype: as configured at CERN
-    - 9 8-strip layers then 10 12-strip layers
-
-  === Further Questions
-
-  - Trigger doing too much work?
-    - requires new simulation
+  - entire back too expensive, prototype not enough
+  - looks like need 2 modules
 ]
+
+== Maximum Signal Yield Allowed
+#slide(composer: (auto, 1fr))[
+  #image("../out/enriched-nuclear/max-signal-allowed-all.pdf")
+][
+  - exponential fits to cumulative background
+    - probably not the best shape
+    - see appendix slides
+  - use fit to predict background with uncertainy in three analysis bins
+  - `combine` to set maximum signal yield
+    - using signal efficiency from paper as conservative estimate
+]
+
+== Reach Estimate
+#slide(composer: (auto, 1fr))[
+  #image("../out/enriched-nuclear/8gev-reach-all.pdf")
+][
+  - using signal rates from paper
+]
+
+= Center Tower Trigger
 
 #show: appendix
 = Questions
+
+== Cumulative Background Comparison
+#slide[
+  #image("../out/enriched-nuclear/8gev-cumulative-bkgd-comp.pdf")
+][
+  #image("../out/enriched-nuclear/8gev-integrated-bkgd-fit-comp.pdf")
+]
+
+== Background Fits
+#for key in ("prototype", "funnel1", "funnel2", "funnel3", "funnel4", "funnel5", "funnel6", "entireback") {
+  slide[
+    #image("../out/enriched-nuclear/8gev-"+key+"-cumulative-bkgd-fit.pdf")
+  ][
+    #image("../out/enriched-nuclear/8gev-"+key+"-integrated-bkgd-fit.pdf")
+  ]
+}
+
 == Ecal RMS Distributions
 #slide[
   #image("../out/enriched-nuclear/ecal-rms.svg")
 ][
-  *Reminder*: using _entire_ Back Hcal
+  *Reminder*: using _entire_, full width Back Hcal
 ]
 
 == Ecal Rec Energy
 #slide[
   #image("../out/enriched-nuclear/ecal-rec-energy.svg")
 ][
-  *Reminder*: using _entire_ Back Hcal
+  *Reminder*: using _entire_, full width Back Hcal
 ]
 
