@@ -92,7 +92,7 @@ $
 
 == True Inclusive Sample
 #slide[
-  #image("../out/true-inclusive/trig-energy-comp.svg")
+  #image("../out/true-inclusive/trig-energy-comp.pdf")
 ][
   - no filtering at sim or reco level
   - only $10^7$ events
@@ -106,8 +106,14 @@ $
 ]
 
 == Unbiased Sample
-#align(center)[
-  histograms filling... ~1B events but includes simulation filter requiring electron to arrive at the ECal with $>7.5" GeV"$ energy
+#slide[
+  #image("../out/unbiased/trig-energy-comp.pdf")
+][
+  - almost 1B events
+  - require electron to arrive at ECal with $>7" GeV"$ energy
+  - number in parentheses in legend is event count below 3~GeV
+  - $12038/15134 = #calc.round(12038/15134, digits: 2)$ rate when using only the center
+    module of all layers compared to all modules of the first 10 layers
 ]
 
 #show: appendix
