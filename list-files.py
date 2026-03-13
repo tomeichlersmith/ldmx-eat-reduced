@@ -7,7 +7,7 @@ base = Path('/local/cms/user/eichl008/ldmx/eat/v14/8gev/bkgd')
 batches = ['dimuon'] + [f'enriched-nuclear-{i}' for i in range(10)] + [f'unbiased-{i}' for i in range(10)] + ['true-inclusive-0']
 
 parser = argparse.ArgumentParser()
-parser.add_argument('batch', choices=batches+['ALL','enriched-nuclear'], help='which batch to enumerate')
+parser.add_argument('batch', choices=batches+['ALL','enriched-nuclear', 'unbiased'], help='which batch to enumerate')
 parser.add_argument('--nper', default=1, type=int, help='number of files per job')
 args = parser.parse_args()
 
