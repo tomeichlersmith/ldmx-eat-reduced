@@ -5,6 +5,14 @@
 test:
     denv fire ana-cfg.py --out out/hist.root $(head -1 enriched-nuclear.list)    
 
+# test compile trigger analyzer and run on single file
+test-trig:
+    denv fire trig-ana-cfg.py --out out/trig-hist.root $(head -1 true-inclusive-0.list)    
+
+# run trigger analyzer over entire true-inclusive sample
+run-trig:
+    ./fire-parallel trig-ana-cfg.py --out-dir out/true-inclusive :::: true-inclusive-0.list
+
 # run over input sample
 run sample:
     ./fire-parallel ana-cfg.py --out-dir out/{{sample}} :::: {{sample}}.list
