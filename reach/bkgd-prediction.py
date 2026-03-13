@@ -38,7 +38,8 @@ for option, bkg_h in histograms.items():
         bins = bkg_h.axes[0].edges,
         w2 = cumulative_bkg['variance'],
         w2method = mplhep.error_estimation.poisson_interval,
-        label = hcal_options[option]
+        label = hcal_options[option],
+        ls = 'dotted' if option in ['entireback','prototype'] else None
     )
 plt.ylabel(r"$N_\text{bkgd}$ below $E_\text{ECal}$")
 plt.xlabel(r"$E_\text{ECal}$ / MeV")
@@ -142,7 +143,8 @@ for option, by in bkgd_yield.items():
         yerr = [(up-lo)/2 for up, lo in zip(by['up'],by['lo'], strict=True)],
         histtype='errorbar',
         capsize=5,
-        label=hcal_options[option]
+        label=hcal_options[option],
+        ls = 'dotted' if option in ['entireback','prototype'] else None
     )
 plt.legend(loc='upper left')
 plt.ylabel(r"$N_\text{bkgd}$ / bin")
