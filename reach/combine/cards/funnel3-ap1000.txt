@@ -1,0 +1,23 @@
+# counting experiment with multiple channels
+# combine datacard generated on 2026-03-13 08:23:23
+imax 3  number of channels
+jmax 1  number of backgrounds
+kmax 6  number of nuisance parameters
+------------
+# number of observed events in each channel
+bin bin0 bin1 bin2
+observation 3 16 204
+------------
+# list the expectation for signal and background processes in each of the channels
+bin           bin0 bin0 bin1 bin1 bin2 bin2 
+process       ap bkg  ap bkg  ap bkg 
+process       0 1  0 1  0 1 
+rate          0.202980 3.009525 0.159301 16.049609 0.148161 203.989574 
+------------
+# list the sources of systematic uncertainty
+sigrate lnN   1.200000 - 1.200000 - 1.200000 - 
+bin0stat lnN  - 1.117183 - - - - 
+bin1stat lnN  - - - 1.067416 - - 
+bin2stat lnN  - - - - - 1.025511 
+bkgdsyst0 lnN - 1.050000 - 1.050000 - 1.050000 
+bkgdsyst1 lnN - 1.000000 - 1.600000 - 1.700000 
