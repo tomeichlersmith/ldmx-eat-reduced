@@ -1,8 +1,9 @@
 import pandas as pd
+import numpy as np
 import uproot
 import argparse
 from pathlib import Path
-from harvester.plot import plt_msa
+from harvester.plot import plt_msa, plt, show
 from hcal_options import hcal_options
 
 parser = argparse.ArgumentParser()
@@ -41,4 +42,31 @@ plt_msa(
         "beam": 8,
         "display": False
     }
+)
+
+mass = msa.loc['paper',:].index.to_numpy()
+ref = msa.loc['paper',:].limit.to_numpy()
+ref_unc = msa.loc['paper',:].limitErr.to_numpy()
+for option, label in all_options:
+    if option == 'paper':
+        continue
+
+    opt_val = msa.loc[option,:].limit.to_numpy()
+    opt_unc = msa.loc[option,:].limitErr.to_numpy()
+
+    ratio = opt_val/ref
+    ratio_err = np.where(
+        ref != 0,
+        np.sqrt(opt_unc**2/ref**2 + opt_val**2*ref_unc**2/ref**4),
+        np.nan
+    )
+    plt.errorbar(mass, ratio, yerr=ratio_err, label=label, fmt='o')
+plt.xscale('log')
+plt.legend()
+plt.xlabel(r"$m_{A'} /$ MeV")
+plt.ylabel("Limit Ratio to Full LDMX")
+show(
+    display=False,
+    filename = args.output / 'limit-ratio-to-full-ldmx.pdf',
+    beam = 8
 )

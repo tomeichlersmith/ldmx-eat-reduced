@@ -48,7 +48,7 @@ title_bar(r'8GeV  $10^{13}$ EoT')
 for boundary in (3160, 2760, 2000, 1000):
     plt.axvline(boundary, color = 'gray', linestyle = 'dotted')
 plt.savefig(
-    args.hist.parent / f'final-ecal-rec-energy.svg',
+    args.hist.parent / f'final-ecal-rec-energy.pdf',
     bbox_inches='tight'
 )
 

@@ -47,7 +47,7 @@ plt.yscale('log')
 plt.ylabel('Events / 50 MeV')
 title_bar(f'8GeV  ${sample_lumi}$ EoT')
 plt.savefig(
-    args.hist.parent / f'trig-energy-comp.svg',
+    args.hist.parent / f'trig-energy-comp.pdf',
     bbox_inches='tight'
 )
 

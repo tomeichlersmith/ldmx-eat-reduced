@@ -140,7 +140,7 @@ for option, by in bkgd_yield.items():
         by['fit_val'],
         bins=ana_bins,
         yerr = [(up-lo)/2 for up, lo in zip(by['up'],by['lo'], strict=True)],
-        histtype='errorbar' if option != 'entireback' else 'step',
+        histtype='errorbar',
         capsize=5,
         label=hcal_options[option]
     )
