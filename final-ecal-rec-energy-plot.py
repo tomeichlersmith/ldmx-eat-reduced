@@ -8,14 +8,7 @@ from helpy.plot import plt, title_bar
 from helpy import samples
 import hist
 
-hcal_options = {
-    'entireback': 'Entire Back',
-    'prototype' : 'CERN 2022 Prototype',
-    'sixonly': 'Only 6 Modules',
-    'funnel' : '6 Modules then Prototype',
-    'megaphone': 'Prototype then 6 Modules',
-    'thinback': '1.6m Wide, Full Depth',
-}
+from reach.hcal_options import hcal_options
 
 parser = argparse.ArgumentParser()
 parser.add_argument('hist', type=Path, help='histogram file to load histogram from')
