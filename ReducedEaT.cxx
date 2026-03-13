@@ -64,7 +64,7 @@ bool is_in_back_hcal(const ldmx::HcalHit& hit) {
 
 bool is_in_thin_back(const ldmx::HcalHit& hit) {
   if (not is_in_back_hcal(hit)) return false;
-  return hcal_hit_n_required_quads(hit.getStrip()) < 5;
+  return hcal_hit_n_required_quads(hit.getStrip()) < 9;
 }
 
 bool is_in_first_six_modules(const ldmx::HcalHit& hit) {
@@ -102,8 +102,8 @@ template<int N>
 bool is_in_N_modules_then_reverse_prototype(const ldmx::HcalHit& hit) {
   if (not is_in_back_hcal(hit)) return false;
   if (hit.getLayer() < N*8+1) {
-    // first 6 modules (8 layers each) have all 4 quads
-    return hcal_hit_n_required_quads(hit.getStrip()) < 5;
+    // first 6 modules (8 layers each) have 8 quads
+    return hcal_hit_n_required_quads(hit.getStrip()) < 9;
   } else if (hit.getLayer() < (N*8 + 10 + 1)) {
     // next 10 layers have 3 quads
     return hcal_hit_n_required_quads(hit.getStrip()) < 4;
