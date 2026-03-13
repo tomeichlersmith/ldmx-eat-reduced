@@ -76,6 +76,25 @@ $
 
 = Center Tower Trigger
 
+== True Inclusive Sample
+#slide[
+  #image("../out/true-inclusive/trig-energy-comp.svg")
+][
+  - no filtering at sim or reco level
+  - only $10^7$ events
+  - $cal(O)(0.5 X_0)$ material upstream of ECal
+  - number in parentheses in legend is event count below 3~GeV
+  - $571/74 = #calc.round(571/74, digits: 2)$ ($785/268 = #calc.round(785/268, digits: 2)$) rate increase
+    when only using center module for all (first 10) layers
+  - $571/268 = #calc.round(571/268, digits: 2)$ rate increase using only the center module of all layers
+    compared to all modules of the first 10 layers
+]
+
+== Unbiased Sample
+#align(center)[
+  histograms filling... ~1B events but includes simulation filter requiring electron to arrive at the ECal with $>7.5" GeV"$ energy
+]
+
 #show: appendix
 = Questions
 
