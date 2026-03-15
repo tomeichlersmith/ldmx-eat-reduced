@@ -62,7 +62,7 @@ bool is_in_back_hcal(const ldmx::HcalHit& hit) {
   return (hit.getSection() == 0);
 }
 
-bool is_in_thin_back(const ldmx::HcalHit& hit) {
+bool is_in_narrow_back(const ldmx::HcalHit& hit) {
   if (not is_in_back_hcal(hit)) return false;
   return hcal_hit_n_required_quads(hit.getStrip()) < 9;
 }
@@ -99,7 +99,7 @@ bool is_in_prototype_then_six_modules(const ldmx::HcalHit& hit) {
 }
 
 template<int N>
-bool is_in_N_modules_then_reverse_prototype(const ldmx::HcalHit& hit) {
+bool is_in_N_narrow_modules_then_reverse_prototype(const ldmx::HcalHit& hit) {
   if (not is_in_back_hcal(hit)) return false;
   if (hit.getLayer() < N*8+1) {
     // first 6 modules (8 layers each) have 8 quads
@@ -115,9 +115,44 @@ bool is_in_N_modules_then_reverse_prototype(const ldmx::HcalHit& hit) {
   }
 }
 
+template<int N>
+bool is_in_N_modules_then_reverse_prototype(const ldmx::HcalHit& hit) {
+  if (not is_in_back_hcal(hit)) return false;
+  if (hit.getLayer() < N*8+1) {
+    // first N modules (8 layers each) have all 10 quads
+    return true;
+  } else if (hit.getLayer() < (N*8 + 10 + 1)) {
+    // next 10 layers have 3 quads
+    return hcal_hit_n_required_quads(hit.getStrip()) < 4;
+  } else if (hit.getLayer() < (N*8 + 10 + 9 + 1)) {
+    // next 9 layers have 2 quads
+    return hcal_hit_n_required_quads(hit.getStrip()) < 3;
+  } else {
+    return false;
+  }
+}
+
+template<int N>
+bool is_in_N_modules_then_reverse_prototype_or_6_side(const ldmx::HcalHit& hit) {
+  if (not is_in_back_hcal(hit)) {
+    // check if hit is in first 6 layers of side hcal
+    return hit.getLayer() < 6+1;
+  }
+  return is_in_N_modules_then_reverse_prototype<N>(hit);
+}
+
+template<int N>
+bool is_in_N_narrow_modules_then_reverse_prototype_or_6_side(const ldmx::HcalHit& hit) {
+  if (not is_in_back_hcal(hit)) {
+    // check if hit is in first 6 layers of side hcal
+    return hit.getLayer() < 6+1;
+  }
+  return is_in_N_narrow_modules_then_reverse_prototype<N>(hit);
+}
+
 static const std::map<std::string, HcalHitFilter> REDUCED_HCAL_OPTIONS = {
   {"entireback", is_in_back_hcal},
-  {"thinback", is_in_thin_back},
+  {"narrowback", is_in_narrow_back},
   {"sixonly", is_in_first_six_modules},
   {"funnel6", is_in_N_modules_then_reverse_prototype<6>},
   {"funnel5", is_in_N_modules_then_reverse_prototype<5>},
@@ -125,6 +160,24 @@ static const std::map<std::string, HcalHitFilter> REDUCED_HCAL_OPTIONS = {
   {"funnel3", is_in_N_modules_then_reverse_prototype<3>},
   {"funnel2", is_in_N_modules_then_reverse_prototype<2>},
   {"funnel1", is_in_N_modules_then_reverse_prototype<1>},
+  {"funnel6_withside6", is_in_N_modules_then_reverse_prototype_or_6_side<6>},
+  {"funnel5_withside6", is_in_N_modules_then_reverse_prototype_or_6_side<5>},
+  {"funnel4_withside6", is_in_N_modules_then_reverse_prototype_or_6_side<4>},
+  {"funnel3_withside6", is_in_N_modules_then_reverse_prototype_or_6_side<3>},
+  {"funnel2_withside6", is_in_N_modules_then_reverse_prototype_or_6_side<2>},
+  {"funnel1_withside6", is_in_N_modules_then_reverse_prototype_or_6_side<1>},
+  {"narrowfunnel6", is_in_N_narrow_modules_then_reverse_prototype<6>},
+  {"narrowfunnel5", is_in_N_narrow_modules_then_reverse_prototype<5>},
+  {"narrowfunnel4", is_in_N_narrow_modules_then_reverse_prototype<4>},
+  {"narrowfunnel3", is_in_N_narrow_modules_then_reverse_prototype<3>},
+  {"narrowfunnel2", is_in_N_narrow_modules_then_reverse_prototype<2>},
+  {"narrowfunnel1", is_in_N_narrow_modules_then_reverse_prototype<1>},
+  {"narrowfunnel6_withside6", is_in_N_narrow_modules_then_reverse_prototype_or_6_side<6>},
+  {"narrowfunnel5_withside6", is_in_N_narrow_modules_then_reverse_prototype_or_6_side<5>},
+  {"narrowfunnel4_withside6", is_in_N_narrow_modules_then_reverse_prototype_or_6_side<4>},
+  {"narrowfunnel3_withside6", is_in_N_narrow_modules_then_reverse_prototype_or_6_side<3>},
+  {"narrowfunnel2_withside6", is_in_N_narrow_modules_then_reverse_prototype_or_6_side<2>},
+  {"narrowfunnel1_withside6", is_in_N_narrow_modules_then_reverse_prototype_or_6_side<1>},
   {"megaphone", is_in_prototype_then_six_modules},
   {"prototype", is_in_prototype}
 };
