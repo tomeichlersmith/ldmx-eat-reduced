@@ -19,13 +19,21 @@ fi
 #    --cl 0.9 \
 parallel \
   --joblog combine-${name}.log \
+  --outdir logs \
   denv combine \
     --name ${name} \
     --hintMethod AsymptoticLimits \
     --method HybridNew \
     --LHCmode LHC-limits \
     --rAbsAcc 0.00005 \
-  :::: cards/jobs.list
+  :::: cards/jobs.list &
+parallel_pid=$!
+while ! [ -f "${out_dir}/logs/parallel.log" ]; do
+  sleep 1
+done
+# watch log file until parallel completes all the jobs
+tail --follow --pid="${parallel_pid}" "combine-${name}.log"
+# merge results
 denv hadd \
   higgsCombine.HybridNew.MedianLimit.${name}.root \
   higgsCombine${name}.HybridNew.mH*.root
