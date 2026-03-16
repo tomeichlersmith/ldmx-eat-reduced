@@ -6,6 +6,7 @@ from pathlib import Path
 
 parser = argparse.ArgumentParser()
 parser.add_argument('bkgd', type=Path, help='background predictions to do reach for')
+parser.add_argumetn('--scale', type=float, help='scale factor to multiply background by', default=1)
 args = parser.parse_args()
 
 here = Path(__file__).parent
@@ -29,7 +30,7 @@ with open(combine_dir / 'jobs.list', 'w') as jobs:
             (
                 DataCard(3)
                 .sig(*se)
-                .bkg(*by["fit_val"])
+                .bkg(*(args.scale*events for events in by["fit_val"]))
                 .bkg_stat(*(
                     ((up - lo)/2/fit_val)
                     for up, lo, fit_val in

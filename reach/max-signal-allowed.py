@@ -8,7 +8,9 @@ from hcal_options import hcal_options
 
 parser = argparse.ArgumentParser()
 parser.add_argument('combine', help='results from combine', type=Path)
-parser.add_argument('--options', nargs='+', help='hcal option short names', default=['entireback','funnel3','funnel2_withside6', 'prototype'], choices=list(hcal_options.keys()))
+parser.add_argument('--options', nargs='+', help='hcal option short names',
+                    default=[f'funnel{i}' for i in range(1,7)],
+                    choices=list(hcal_options.keys()))
 parser.add_argument('-o', '--output', help='directory to put output images', type=Path)
 args = parser.parse_args()
 
@@ -30,16 +32,6 @@ plt_msa(
     ),
     show_kw = {
         "filename": args.output / 'max-signal-allowed-all.pdf',
-        "stage": "Simulation Internal",
-        "beam": 8,
-        "display": False
-    }
-)
-
-plt_msa(
-    *((msa.loc[option,:], label) for option, label in all_options if option != "prototype"),
-    show_kw = {
-        "filename": args.output / 'max-signal-allowed-no-prototype.pdf',
         "stage": "Simulation Internal",
         "beam": 8,
         "display": False

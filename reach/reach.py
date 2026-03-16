@@ -13,6 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('combine', help='results from combine', type=Path)
 parser.add_argument('-o', '--output', help='directory to put output images', type=Path)
 parser.add_argument('--options', nargs='+', help='hcal option short names', default=['entireback','funnel3','funnel2_withside6', 'prototype'], choices=list(hcal_options.keys()))
+parser.add_argument('--scale', default=1, type=float, help='scale factor background was multiplied by')
 args = parser.parse_args()
 
 if args.output is None:
@@ -36,24 +37,24 @@ def limit(msa, label, band = None, plt_kwargs = {}):
     plt_kwargs.setdefault('lw',3)
     y_limit = signal_events_to_y(
         msa.limit.to_numpy(),
-        signal_yield.prod_yield.to_numpy(),
+        signal_yield.prod_yield.to_numpy()*args.scale,
         alpha_D, mA_over_mChi
     )
     art = plt.plot(
         mchi,
         y_limit,
-        label=r'EaT; $10^{13}~\text{EoT}$; '+(method if label is None else label),
+        label=rf'EaT; $'+('10^{13}' if args.scale == 1 else rf'{args.scale:.0f}\times 10^{13}')+'~\text{EoT}$; '+(method if label is None else label),
         **plt_kwargs
     )
     if band is not None:
         y_limit_up = signal_events_to_y(
             msa.limit.to_numpy(),
-            (1-band*0.2)*pass_rate_per_eps2[b].prod_rate*1e13,
+            (1-band*0.2)*pass_rate_per_eps2[b].prod_rate*1e13*args.scale,
             alpha_D, mA_over_mChi
         )
         y_limit_dn = signal_events_to_y(
             msa.limit.to_numpy(),
-            (1+band*0.2)*pass_rate_per_eps2[b].prod_rate*1e13,
+            (1+band*0.2)*pass_rate_per_eps2[b].prod_rate*1e13*args.scale,
             alpha_D, mA_over_mChi
         )
         plt.gca().fill_between(
