@@ -12,6 +12,7 @@ from hcal_options import hcal_options
 parser = argparse.ArgumentParser()
 parser.add_argument('combine', help='results from combine', type=Path)
 parser.add_argument('-o', '--output', help='directory to put output images', type=Path)
+parser.add_argument('--options', nargs='+', help='hcal option short names', default=['entireback','funnel3','funnel2_withside6', 'prototype'], choices=list(hcal_options.keys()))
 args = parser.parse_args()
 
 if args.output is None:
@@ -23,7 +24,7 @@ with uproot.open(args.combine) as f:
     ).set_index(['option', 'mh'])
 
 
-all_options = list(hcal_options.items())+[('paper', 'Full LDMX')]
+all_options = list((option, hcal_options[option]) for option in args.options)+[('paper', 'Full LDMX')]
 alpha_D = 0.5
 mA_over_mChi = 3
 masses = np.array([1,5,10,50,100,500,1000])
@@ -41,7 +42,7 @@ def limit(msa, label, band = None, plt_kwargs = {}):
     art = plt.plot(
         mchi,
         y_limit,
-        label=(method if label is None else label),
+        label=r'EaT; $10^{13}~\text{EoT}$; '+(method if label is None else label),
         **plt_kwargs
     )
     if band is not None:
@@ -119,7 +120,8 @@ def reach_plt(
     plt.xlabel(r"$m_\chi$ [MeV]")
     plt.ylabel(r"$y = \alpha_D \epsilon^2 (m_\chi/m_{A'})^4$")
     plt.legend(
-        loc='lower right',
+        loc='upper left',
+        bbox_to_anchor= (1,1),
         title=r"$\alpha_D = "+str(alpha_D)+r"\quad m_{A'} = "+str(mA_over_mChi)+r"m_\chi$"
     )
     show_kw.setdefault('stage','Simulation Internal')
@@ -130,5 +132,6 @@ def reach_plt(
 reach_plt(
     *((msa.loc[option,:], label) for option, label in all_options),
     beam = 8,
+    lumi = None,
     filename = args.output / '8gev-reach-all.pdf'
 )

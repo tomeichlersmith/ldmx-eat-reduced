@@ -16,13 +16,15 @@ from reach.hcal_options import hcal_options
 
 parser = argparse.ArgumentParser()
 parser.add_argument('hist', type=Path, help='histogram file to load histogram from')
+parser.add_argument('--options', nargs='+', help='hcal option short names', default=['entireback','funnel3','funnel2_withside6', 'prototype'], choices=list(hcal_options.keys()))
 args = parser.parse_args()
 
-sample = samples.get(args.hist.parent.stem)
+sample = samples.get('enriched-nuclear') #args.hist.parent.stem)
 
 f = HistFile(args.hist, 'ReducedEaT')
 
-for key, label in hcal_options.items():
+options = list((option, hcal_options[option]) for option in args.options)
+for key, label in options:
     h = f[f'{key}_final_total_ecal_rec_energy']*sample.hist_scale
     h[hist.rebin(5)].plot1d(
         yerr=False,

@@ -8,6 +8,7 @@ from hcal_options import hcal_options
 
 parser = argparse.ArgumentParser()
 parser.add_argument('combine', help='results from combine', type=Path)
+parser.add_argument('--options', nargs='+', help='hcal option short names', default=['entireback','funnel3','funnel2_withside6', 'prototype'], choices=list(hcal_options.keys()))
 parser.add_argument('-o', '--output', help='directory to put output images', type=Path)
 args = parser.parse_args()
 
@@ -19,7 +20,8 @@ with uproot.open(args.combine) as f:
         f['limit'].arrays(library='np')
     ).set_index(['option', 'mh'])
 
-all_options = list(hcal_options.items())+[('paper', 'Full LDMX')]
+
+all_options = list((option, hcal_options[option]) for option in args.options)+[('paper', 'Full LDMX')]
 
 plt_msa(
     *(
