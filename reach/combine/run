@@ -19,7 +19,7 @@ fi
 #    --cl 0.9 \
 parallel \
   --joblog combine-${name}.log \
-  --outdir logs \
+  --results logs \
   denv combine \
     --name ${name} \
     --hintMethod AsymptoticLimits \
@@ -28,7 +28,7 @@ parallel \
     --rAbsAcc 0.00005 \
   :::: cards/jobs.list &
 parallel_pid=$!
-while ! [ -f "${out_dir}/logs/parallel.log" ]; do
+while ! [ -f "combine-${name}.log" ]; do
   sleep 1
 done
 # watch log file until parallel completes all the jobs
