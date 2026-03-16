@@ -63,6 +63,7 @@ $
 #slide(composer: (auto, 1fr))[
   #image("../out/enriched-nuclear/max-signal-allowed-all.pdf")
 ][
+  - simulation scaled up by factor of 5
   - exponential fits to cumulative background
     - probably not the best shape
     - see appendix slides
@@ -114,15 +115,17 @@ $
 #show: appendix
 = Questions
 
+/*
 == Cumulative Background Comparison
 #slide[
   #image("../out/enriched-nuclear/8gev-cumulative-bkgd-comp.pdf")
 ][
   #image("../out/enriched-nuclear/8gev-integrated-bkgd-fit-comp.pdf")
 ]
+*/
 
 == Background Fits
-#for key in ("prototype", "funnel1", "funnel2", "funnel3", "funnel4", "funnel5", "funnel6", "entireback") {
+#for key in ("prototype", "narrowfunnel1", "narrowfunnel2", "narrowfunnel3", "narrowfunnel4", "narrowfunnel5", "narrowfunnel6", "entireback") {
   slide[
     #image("../out/enriched-nuclear/8gev-"+key+"-cumulative-bkgd-fit.pdf")
   ][
