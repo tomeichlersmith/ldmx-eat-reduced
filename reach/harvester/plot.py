@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 def show(
     beam = None, *,
-    lumi = '$5 \times 10^{13}$ EoT',
+    lumi = r'$10^{13}$ EoT',
     stage = 'Internal',
     ax = None,
     filename = None,
