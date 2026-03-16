@@ -40,7 +40,7 @@
 - *Ecal Reco Energy* -- total energy in Ecal (calculated only with even layers)
 - *Ecal RMS* -- transverse RMS of Ecal shower (calculated only with even layers)
 - *Bar* -- single element of Hcal detector, used interchangeably with "strip"
-- *Back Hcal Max PE* -- maximum PE deposited in a single bar in _entire_ Back Hcal
+- *Hcal Max PE* -- maximum PE deposited in a single bar only considering layers/strips included in legend description
 - *Quads* -- number of quads within a layer to get to strip $s$ symmetrically
 $
   Q(s) = floor((|s - 19.5|)/2) + 1 
@@ -49,17 +49,14 @@ $
 - *Layer #sym.star Quads* -- hit that minimizes "area" cost function $C(l="layer",s) = l times Q(s)$
 - *Quads then Layer* -- hit that minimizes $Q(s)$ and then minimizes layer if more than one hit in that "most central" quad
 */
-- *Narrow Module* -- 4 quad bars (16 strips) instead of 10 quad bars (40 strips) per layer
-  - #text(fill: umn-sunny)[being fixed to 8 quads (32 strips)]
+- *Narrow Module* -- 8 quad bars (32 strips) instead of 10 quad bars (40 strips) per layer
+- *Thin Side* -- side hcal with 6 layers
 
 = Reducing Hcal
 
 == Final Ecal Energy Distribution
-#slide(composer: (auto, 1fr))[
+#slide[
   #image("../out/enriched-nuclear/final-ecal-rec-energy.pdf")
-][
-  - entire back too expensive, prototype not enough
-  - looks like need 2 modules
 ]
 
 == Maximum Signal Yield Allowed
@@ -71,21 +68,19 @@ $
     - see appendix slides
   - use fit to predict background with uncertainy in three analysis bins
   - `combine` to set maximum signal yield
-    - using signal efficiency from paper as conservative estimate
+    - using signal efficiency and signal rates from paper as conservative estimate
 ]
 
 #slide[
   #image("../out/enriched-nuclear/limit-ratio-to-full-ldmx.pdf")
 ][
   - reducing Hcal harms reach
-  - seems like we can keep reduction in limit to a factor of less than ~5 with 3 or more narrow modules
+  - seems like we can keep reduction in limit to a factor of less than ~5 with 3 or more modules
 ]
 
 == Reach Estimate
 #slide(composer: (auto, 1fr))[
   #image("../out/enriched-nuclear/8gev-reach-all.pdf")
-][
-  - using signal rates from paper
 ]
 
 = Center Tower Trigger
