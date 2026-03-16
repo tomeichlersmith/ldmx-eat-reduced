@@ -26,7 +26,7 @@ with uproot.open(args.hist) as f:
     histograms = {
         option: (
             f[f'ReducedEaT/ReducedEaT_{option}_final_total_ecal_rec_energy'].to_hist()
-            [:hist.loc(max_e):hist.rebin(5)]*200.0
+            [:hist.loc(max_e):hist.rebin(5)]*200.0*5
         )
         for option in hcal_options
     }

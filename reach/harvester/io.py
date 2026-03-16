@@ -67,6 +67,6 @@ def load_signal_yield(rates = None):
     beam = 8
     return pd.DataFrame({
         'ap_mass': masses,
-        'prod_yield': [rates.loc['eat',beam,0.5,m].rate*1e13 for m in masses]
+        'prod_yield': [rates.loc['eat',beam,0.5,m].rate*5e13 for m in masses]
         })
 
