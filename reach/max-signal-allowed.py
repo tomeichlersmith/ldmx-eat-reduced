@@ -9,7 +9,7 @@ from hcal_options import hcal_options
 parser = argparse.ArgumentParser()
 parser.add_argument('combine', help='results from combine', type=Path)
 parser.add_argument('--options', nargs='+', help='hcal option short names',
-                    default=[f'funnel{i}' for i in range(1,7)],
+                    default=[f'narrowfunnel{i}' for i in range(1,7)],
                     choices=list(hcal_options.keys()))
 parser.add_argument('-o', '--output', help='directory to put output images', type=Path)
 args = parser.parse_args()
@@ -39,6 +39,7 @@ plt_msa(
 )
 
 mass = msa.loc['paper',:].index.to_numpy()
+isort = np.argsort(mass)
 ref = msa.loc['paper',:].limit.to_numpy()
 ref_unc = msa.loc['paper',:].limitErr.to_numpy()
 for option, label in all_options:
@@ -54,7 +55,7 @@ for option, label in all_options:
         np.sqrt(opt_unc**2/ref**2 + opt_val**2*ref_unc**2/ref**4),
         np.nan
     )
-    plt.errorbar(mass, ratio, yerr=ratio_err, label=label, fmt='o')
+    plt.errorbar(mass[isort], ratio[isort], linewidth=1, linestyle='-', yerr=ratio_err[isort], label=label, fmt='o')
 plt.xscale('log')
 plt.legend()
 plt.xlabel(r"$m_{A'} /$ MeV")
