@@ -63,5 +63,6 @@ plt.ylabel("Limit Ratio to Full LDMX")
 show(
     display=False,
     filename = args.output / 'limit-ratio-to-full-ldmx.pdf',
+    stage = 'Simulation Internal',
     beam = 8
 )
