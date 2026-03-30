@@ -6,7 +6,7 @@ from pathlib import Path
 
 parser = argparse.ArgumentParser()
 parser.add_argument('bkgd', type=Path, help='background predictions to do reach for')
-parser.add_argumetn('--scale', type=float, help='scale factor to multiply background by', default=1)
+parser.add_argument('--scale', type=float, help='scale factor to multiply background by', default=1)
 args = parser.parse_args()
 
 here = Path(__file__).parent
