@@ -7,39 +7,6 @@
 
 #include <cmath>
 
-/// updated layer weights for v14 that adds the pre-ceeding
-/// odd-layer weight to the even layer weight
-static const std::vector<float> even_only_layer_weights = {
-  2.329,
-  -1, 4.339+6.495,
-  -1, 7.490+8.595,
-  -1, 10.253+10.915,
-  -1, 10.915+10.915,
-  -1, 10.915+10.915,
-  -1, 10.915+10.915,
-  -1, 10.915+10.915,
-  -1, 10.915+10.915,
-  -1, 10.915+10.915,
-  -1, 10.915+10.915,
-  -1, 10.915+10.915,
-  -1, 14.783+18.539,
-  -1, 18.539+18.539, 
-  -1, 18.539+18.539,
-  -1, 18.539+18.539,
-  -1, 18.539+18.539,
-  -1
-};
-/// for re-reconstructing energy of an ecal hit
-static const float mip_si_energy = 0.130; // MeV
-
-/// function to check if a ecal hit should be included
-/// only even layers from the first 32 layers
-bool include_ecal_hit(const ldmx::EcalHit& hit) {
-  ldmx::EcalID id(static_cast<unsigned int>(hit.getID()));
-  if (id.layer() >= 32) return false;
-  return (id.layer() % 2 == 0);
-}
-
 /// count number of quad-bars are needed to reach out to the input
 /// strip assuming we start filling from the center (strip 20)
 int hcal_hit_n_required_quads(int strip) {
@@ -246,32 +213,22 @@ void ReducedEaT::analyze(const framework::Event& event) {
   }
 
   const auto& all_ecal_hits{event.getCollection<ldmx::EcalHit>("EcalRecHits", "")};
-  std::vector<const ldmx::EcalHit*> ecal_hits;
-  for (const auto& ecal_hit: all_ecal_hits) {
-    if (include_ecal_hit(ecal_hit)) {
-      ecal_hits.push_back(&ecal_hit);
-    }
-  }
   float total_energy{0},
         center_x{0},
         center_y{0},
         shower_rms{0};
-  for (const auto* ecal_hit: ecal_hits) {
-    ldmx::EcalID id{static_cast<unsigned int>(ecal_hit->getID())};
-    float hit_energy = (1 + even_only_layer_weights.at(id.layer())/mip_si_energy)*ecal_hit->getAmplitude();
-    total_energy += hit_energy;
-    center_x += hit_energy*ecal_hit->getXPos();
-    center_y += hit_energy*ecal_hit->getYPos();
+  for (const auto& hit: all_ecal_hits) {
+    total_energy += hit.getEnergy();
+    center_x += hit.getEnergy()*hit.getXPos();
+    center_y += hit.getEnergy()*hit.getYPos();
   }
   if (total_energy > 0) {
     center_x /= total_energy;
     center_y /= total_energy;
-    for (const auto* ecal_hit: ecal_hits) {
-      ldmx::EcalID id{static_cast<unsigned int>(ecal_hit->getID())};
-      float hit_energy = (1 + even_only_layer_weights.at(id.layer())/mip_si_energy)*ecal_hit->getAmplitude();
-      shower_rms += hit_energy*std::sqrt(
-          (ecal_hit->getXPos() - center_x)*(ecal_hit->getXPos() - center_x)
-          + (ecal_hit->getYPos() - center_y)*(ecal_hit->getYPos() - center_y)
+    for (const auto& hit: all_ecal_hits) {
+      shower_rms += hit.getEnergy()*std::sqrt(
+          (hit.getXPos() - center_x)*(hit.getXPos() - center_x)
+          + (hit.getYPos() - center_y)*(hit.getYPos() - center_y)
           );
     }
     shower_rms /= total_energy;
