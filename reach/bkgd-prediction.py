@@ -10,13 +10,16 @@ import argparse
 from pathlib import Path
 parser = argparse.ArgumentParser()
 parser.add_argument('hist', type=Path)
+parser.add_argument(
+    '--options', nargs='+', help='hcal option short names for summary plot, all options are fit', default=['entireback','narrowfunnel3','narrowfunnel2', 'prototype'], choices=list(hcal_options.keys()))
 args = parser.parse_args()
 
 beam = 8
 cut = 2760
 max_e = 3160
 ana_bins = np.array([0.0, 0.1*beam*1000, 0.2*beam*1000, cut])
-output = args.hist.parent
+output = args.hist.parent / 'bkgd-prediction'
+output.mkdir(exist_ok=True, parents=True)
 bkgd_yield = {}
 
 # need to scale histogram from weights to yield
@@ -32,6 +35,8 @@ with uproot.open(args.hist) as f:
     }
 
 for option, bkg_h in histograms.items():
+    if option not in args.options:
+        continue
     cumulative_bkg = bkg_h.view().cumsum()
     mplhep.histplot(
         cumulative_bkg['value'],
@@ -136,6 +141,8 @@ for option, bkg_h in histograms.items():
 
 
 for option, by in bkgd_yield.items():
+    if option not in args.options:
+        continue
     mplhep.histplot(
         by['fit_val'],
         bins=ana_bins,
