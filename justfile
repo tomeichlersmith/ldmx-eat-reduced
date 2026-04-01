@@ -12,6 +12,7 @@ test-trig:
 # run trigger analyzer over entire true-inclusive sample
 run-trig:
     ./fire-parallel trig-ana-cfg.py --out-dir out/true-inclusive :::: true-inclusive-0.list
+    ./fire-parallel trig-ana-cfg.py --out-dir out/unbiased :::: unbiased.list
 
 # run over input sample
 run sample:
