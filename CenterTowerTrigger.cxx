@@ -31,8 +31,8 @@ void CenterTowerTrigger::analyze(const framework::Event& event) {
         center_tower_energy{0},
         front_energy{0},
         center_tower_front_energy{0};
-  for (const auto& ecal_hit: all_ecal_hits) {
-    ldmx::EcalID id{static_cast<unsigned int>(ecal_hit.getID())};
+  for (const auto& hit: all_ecal_hits) {
+    ldmx::EcalID id{static_cast<unsigned int>(hit.getID())};
     total_energy += hit.getEnergy();
     if (id.module() == 0) {
       center_tower_energy += hit.getEnergy();
