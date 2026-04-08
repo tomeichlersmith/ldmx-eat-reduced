@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 def title_bar(
     text=None, *,
-    by_ldmx='Internal',
+    by_ldmx='Simulation Internal',
     exp_text_kw = dict(),
     lumitext_kw = dict(),
     **kwargs

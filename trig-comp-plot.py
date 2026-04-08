@@ -38,8 +38,7 @@ for key, label in [
 plt.xlim(0,8000)
 plt.legend(
     title='\n'.join([
-        'Only Even Ecal Layers',
-        sample_label
+        sample_label,
     ]),
     loc='upper left',
 )
