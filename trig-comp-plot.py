@@ -23,8 +23,8 @@ f = HistFile(args.hist, 'CenterTowerTrigger')
 for key, label in [
     ('total', 'All Layers and Modules'),
     ('center_tower', 'All Layers, Center Module'),
-    ('front', 'First 10 Layers, All Modules'),
-    ('center_tower_front', 'First 10 Layers, Center Module')
+    ('front', 'First 20 Layers, All Modules'),
+    ('center_tower_front', 'First 20 Layers, Center Module')
 ]:
     h = f[f'{key}_energy']
     npass = h[:3000j:sum]
