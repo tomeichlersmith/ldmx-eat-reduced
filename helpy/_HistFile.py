@@ -4,8 +4,12 @@ class HistFile:
     """given a filepath and the name of a ldmx-sw Analyzer,
     access the histograms it created
 
-    strips off the prefix that repeats the analyzers name and
-    the cycle number"""
+    For v4.5.1 ldmx-sw and earlier, the analyzer's name was
+    repeated as a prefix before the histogram name within
+    the TDirectory holding the analyzer's histograms.
+    This calss strips off this prefix in order for it to
+    appear the same as v4.5.2 ldmx-sw and later histogram
+    files."""
     
     def __init__(self, fp, ana, **kwargs):
         """open the passed ROOT file
@@ -33,11 +37,13 @@ class HistFile:
 
     def get(self, item):
         """get an object from the file without converting it to a hist.Hist"""
+        old_style_key = f'{self._ana}_{item}'
+        if old_style_key in self._ana_dir:
+            return self._ana_dir[old_style_key]
         if item in self._ana_dir:
             return self._ana_dir[item]
-        if item in self._file:
-            return self._file[item]
-        return self._ana_dir[f'{self._ana}_{item}']
+        # fall back to whole file so user gets printout of all the keys
+        return self._file[item]
 
     def __getitem__(self, item):
         """get an object and convert it to a hist.Hist"""
